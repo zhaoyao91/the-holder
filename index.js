@@ -1,24 +1,18 @@
 /*
 StandardItemDefinition: {
   name: String,
-  need?: String[],
+  need?: String | String[],
   build: (items) => Promise => ItemPack,
 }
 
 PerItemDefinition: {
-  type: 'per-item',
+  perItem: true,
   name: String,
-  need?: String[],
+  need?: String | String[],
   build: (items, definition) => Promise => Item
 }
 
-CustomItemDefinition: {
-  type: String,
-  ...
-}
-
-ItemDefinition: StandardItemDefinition | PerItemDefinition | CustomItemDefinition
-
+ItemDefinition: StandardItemDefinition | PerItemDefinition
 
 Item ~ Any
 
@@ -31,37 +25,31 @@ ItemPack: {
   // destroy item and release its resources
   destroy?: () => Promise => void,
 }
-
-Adapter: (CustomItemDefinition) => StandardItemDefinition
  */
 
 const clean = require('clean-options')
 const toposort = require('toposort')
 const flatten = require('lodash.flatten')
 
-module.exports = class Holder {
+class Holder {
   constructor (options) {
     const {
       logger = console,
-      adapters = {},
     } = clean(options)
 
     this._logger = logger
-    this._adapters = adapters
   }
 
   async load (definitions) {
     const logger = this._logger
-    const adapters = this._adapters
     const items = {}
     const perItemDefs = []
     const destroys = []
     const stops = []
-    definitions = adaptDefinitions(definitions, adapters)
     definitions = sortDefinitions(definitions)
     for (let definition of definitions) {
-      const {type} = definition
-      if (type === 'per-item') perItemDefs.push(definition)
+      const {perItem} = definition
+      if (perItem) perItemDefs.push(definition)
       else {
         const {name, build} = definition
         const itemItems = {...items}
@@ -104,22 +92,12 @@ module.exports = class Holder {
   }
 }
 
-function adaptDefinitions(definitions, adapters) {
-  return definitions.map(definition => {
-    const {type} = definition
-    if (!type || type === 'per-item') return definition
-    else {
-      const adapter = adapters[type]
-      if (!adapter) throw new Error(`cannot find adapter for type '${type}'`)
-      return adapter(definition)
-    }
-  })
-}
+module.exports = Holder
 
 function sortDefinitions (definitions) {
   checkUniqueDefinitions(definitions)
   const nodes = definitions.map(x => x.name)
-  const edges = flatten(definitions.map(x => (x.need || []).map(y => [x.name, y])))
+  const edges = flatten(definitions.map(x => getNeed(x).map(y => [x.name, y])))
   const sortedNodes = toposort.array(nodes, edges).reverse()
   return sortedNodes.map(node => definitions.find(x => x.name === node))
 }
@@ -132,4 +110,10 @@ function checkUniqueDefinitions (definitions) {
     }
     names.add(x.name)
   })
+}
+
+function getNeed (x) {
+  if (!x.need) return []
+  else if (!Array.isArray(x.need)) return [x.need]
+  else return x.need
 }
