@@ -8,15 +8,15 @@ Generally speaking, the backbone of an app takes the following responsibilities:
 
 - correctly load aspects (items) the app cares about
   - config, context, components ...
-  - items have usually have dependencies from here to there, thus the dependencies of an item must be loaded before it
+  - items usually have dependencies from here to there, thus the dependencies of an item must be loaded before it
   - any item should have access to its dependencies
 - correctly close the app
-  - have the ability to stop receiving any request from outside world while keep handling already received requests until
+  - the ability to stop receiving any request from outside world while keep handling already received requests until
   they finished to support graceful shutdown 
-  - have the ability to destroy items and release all resources
+  - the ability to destroy items and release all resources
   
-**The Holder** takes and only takes tasks listed above. The detailed logic, such as what items should be load, what's there
-dependencies, how should they be stopped and destroyed, is left blank to the user.
+**The Holder** takes and only takes tasks listed above. The detailed logic, such as what items should be load, what're 
+their dependencies, how should they be stopped and destroyed, is left blank to the user.
 
 ## Installation
 
@@ -34,7 +34,7 @@ const definitions = [
     name: 'db', 
     need: 'config', 
     build: async ({config}) => {
-      ...connect db... 
+      ...connect to db... 
       return {
         item: connection,
         destroy: async () => {...disconnect...}
@@ -45,9 +45,9 @@ const definitions = [
     name: 'server',
     need: 'config',
     build: async ({config}) => {
-      ...connect db... 
+      ...start (such as http) server... 
       return {
-        item: connection,
+        item: server,
         stop: async () => {...stop receiving requests...}
       }
     }
@@ -56,7 +56,7 @@ const definitions = [
     name: 'handlers',
     need: ['config', 'db', 'server'],
     build: ({config, db, server}) => {
-      ...register handlers to server...
+      ...register handlers to the server...
       ...no need to return anything...
     }
   }
@@ -71,6 +71,7 @@ await holder.load(definitions)
 const gracedown = require('grace-down')
 gracedown(async () => {
   await holder.close()
+  process.exit(0)
 })
 ```
 
@@ -105,6 +106,8 @@ StandardItemDefinition: {
   build: (items) => Promise => ItemPack,
 }
 
+// special item definition which will build a new specific item for every item depends on it 
+// this kind of item cannot be stopped or destroyed
 PerItemDefinition: {
   perItem: true,
   name: String,

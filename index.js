@@ -53,7 +53,8 @@ class Holder {
       else {
         const {name, build} = definition
         const itemItems = {...items}
-        for (let perItemDef of perItemDefs) {
+        const neededPerItemDefs = perItemDefs.filter(def => getNeed(definition).includes(def.name))
+        for (let perItemDef of neededPerItemDefs) {
           logger.info('loading per-item item...', {name: perItemDef.name, for: name})
           itemItems[perItemDef.name] = await perItemDef.build(itemItems, definition)
           logger.info('per-item item loaded', {name: perItemDef.name, for: name})

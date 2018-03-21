@@ -90,8 +90,8 @@ describe('Holder', () => {
     ])
   })
 
-  it('should load per-item item', async () => {
-    expect.assertions(4)
+  it('should load needed per-item item', async () => {
+    expect.assertions(3)
     const defs = [
       {name: 'base', build () {return {item: 'Base'}}},
       {
@@ -106,8 +106,10 @@ describe('Holder', () => {
         }
       },
       {
-        name: 'item2', need: 'name', build (context) {
-          expect(context.name).toBe('item2')
+        name: 'item2', need: 'item1', build (context) {
+          // as item2 do not declare requirement on name
+          // it won't receive this per-item item
+          expect(context.name).toBeUndefined()
         }
       }
     ]

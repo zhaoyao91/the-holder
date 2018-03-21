@@ -1,6 +1,6 @@
 {
   "name": "the-holder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "General app loader or item holder.",
   "main": "index.js",
   "scripts": {
