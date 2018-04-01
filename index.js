@@ -44,8 +44,8 @@ class Holder {
     const logger = this._logger
     const items = {}
     const perItemDefs = []
-    const destroys = []
-    const stops = []
+    const destroys = this._destroys = []
+    const stops = this._stops = []
     definitions = sortDefinitions(definitions)
     for (let definition of definitions) {
       const {perItem} = definition
@@ -69,22 +69,20 @@ class Holder {
         }
       }
     }
-    this._destroys = destroys.reverse()
-    this._stops = stops.reverse()
     logger.info('all items loaded')
   }
 
   async close () {
     const logger = this._logger
     // stop all request listeners
-    for (let item of this._stops) {
+    for (let item of this._stops.reverse()) {
       logger.info('stopping item...', {name: item.name})
       await item.stop()
       logger.info('item stopped', {name: item.name})
     }
     logger.info('all items stopped')
     // destroy all items and release all resources
-    for (let item of this._destroys) {
+    for (let item of this._destroys.reverse()) {
       logger.info('destroying item...', {name: item.name})
       await item.destroy()
       logger.info('item destroyed', {name: item.name})
