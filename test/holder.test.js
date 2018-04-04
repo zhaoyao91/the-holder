@@ -1,4 +1,5 @@
 const Holder = require('../index')
+const sleep = require('sleep-promise')
 
 describe('Holder', () => {
   it('should load a item', async () => {
@@ -149,5 +150,48 @@ describe('Holder', () => {
     catch (err) {
       expect(err.message).toMatch(/definition name '.*' is duplicated/)
     }
+  })
+
+  it('should interrupt the loading by closing the holder', async () => {
+    const loaded = [false, false, false]
+    const closed = [false, false, false]
+    const defs = [
+      {
+        name: 'a',
+        build () {
+          loaded[0] = true
+          return {
+            destroy () {closed[0] = true}
+          }
+        }
+      },
+      {
+        name: 'b',
+        need: ['a'],
+        async build () {
+          await sleep(100)
+          loaded[1] = true
+          return {
+            destroy () {closed[1] = true}
+          }
+        }
+      },
+      {
+        name: 'c',
+        need: 'b',
+        build () {
+          loaded[2] = true
+          return {
+            destroy () {closed[2] = true}
+          }
+        }
+      }
+    ]
+    const holder = new Holder()
+    holder.load(defs)
+    await sleep(10)
+    await holder.close()
+    expect(loaded).toEqual([true, true, false])
+    expect(closed).toEqual([true, true, false])
   })
 })
