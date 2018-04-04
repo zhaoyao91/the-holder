@@ -30,13 +30,15 @@ ItemPack: {
 const clean = require('clean-options')
 const toposort = require('toposort')
 const flatten = require('lodash.flatten')
+const Signal = require('await-signal')
 
 const symbols = {
   logger: Symbol('logger'),
   items: Symbol('items'),
   destroys: Symbol('destroys'),
   stops: Symbol('stops'),
-  status: Symbol('status') // init => loading => loaded => closing => closed
+  loadSignal: Symbol('loadSignal'), // init, loading, loaded
+  closeSignal: Symbol('closeSignal'), // init, closing, closed
 }
 
 class Holder {
@@ -46,15 +48,17 @@ class Holder {
     } = clean(options)
 
     this[symbols.logger] = logger
-    this[symbols.status] = 'init'
+    this[symbols.loadSignal] = new Signal('init')
+    this[symbols.closeSignal] = new Signal('init')
   }
 
   async load (definitions = []) {
-    const status = this[symbols.status]
-    if (status !== 'init') {
-      throw new Error(`Invalid status. Holder can only be loaded at 'init' status, but current status is '${status}'`)
+    const loadSignal = this[symbols.loadSignal]
+    const closeSignal = this[symbols.closeSignal]
+    if (!(loadSignal.state === 'init' && closeSignal.state === 'init')) {
+      throw new Error(`Invalid status. Expect (init, init), received (${loadSignal.state}, ${closeSignal.state})`)
     }
-    this[symbols.status] = 'loading'
+    loadSignal.state = 'loading'
 
     const logger = this[symbols.logger]
     const items = this[symbols.items] = {}
@@ -83,18 +87,22 @@ class Holder {
           items[name] = item.item
         }
       }
+      // if user try to close holder while loading, stop loading more items
+      if (closeSignal.state === 'closing') break
     }
     logger.info('all items loaded')
 
-    this[symbols.status] = 'loaded'
+    loadSignal.state = 'loaded'
   }
 
   async close () {
-    const status = this[symbols.status]
-    if (status !== 'loaded') {
-      throw new Error(`Invalid status. Holder can only be closed at 'loaded' status, but current status is '${status}'`)
+    const loadSignal = this[symbols.loadSignal]
+    const closeSignal = this[symbols.closeSignal]
+    if (!(loadSignal.state !== 'init' && closeSignal.state === 'init')) {
+      throw new Error(`Invalid status. Expect (!init, init), received (${loadSignal.state}, ${closeSignal.state})`)
     }
-    this[symbols.status] = 'closing'
+    closeSignal.state = 'closing'
+    await loadSignal.until('loaded')
 
     const logger = this[symbols.logger]
     // stop all request listeners
@@ -112,13 +120,14 @@ class Holder {
     }
     logger.info('all items destroyed')
 
-    this[symbols.status] = 'closed'
+    closeSignal.state = 'closed'
   }
 
   getItem (name) {
-    const status = this[symbols.status]
-    if (status !== 'loaded') {
-      throw new Error(`Invalid status. Item can only be retrieved at 'loaded' status, but current status is '${status}'`)
+    const loadSignal = this[symbols.loadSignal]
+    const closeSignal = this[symbols.closeSignal]
+    if (!(loadSignal.state === 'loaded' && closeSignal.state === 'init')) {
+      throw new Error(`Invalid status. Expect (loaded, init), received (${loadSignal.state}, ${closeSignal.state})`)
     }
 
     return this[symbols.items][name]
