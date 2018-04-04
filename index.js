@@ -35,7 +35,8 @@ const symbols = {
   logger: Symbol('logger'),
   items: Symbol('items'),
   destroys: Symbol('destroys'),
-  stops: Symbol('stops')
+  stops: Symbol('stops'),
+  status: Symbol('status') // init => loading => loaded => closing => closed
 }
 
 class Holder {
@@ -45,9 +46,16 @@ class Holder {
     } = clean(options)
 
     this[symbols.logger] = logger
+    this[symbols.status] = 'init'
   }
 
-  async load (definitions) {
+  async load (definitions = []) {
+    const status = this[symbols.status]
+    if (status !== 'init') {
+      throw new Error(`Invalid status. Holder can only be loaded at 'init' status, but current status is '${status}'`)
+    }
+    this[symbols.status] = 'loading'
+
     const logger = this[symbols.logger]
     const items = this[symbols.items] = {}
     const perItemDefs = []
@@ -77,9 +85,17 @@ class Holder {
       }
     }
     logger.info('all items loaded')
+
+    this[symbols.status] = 'loaded'
   }
 
   async close () {
+    const status = this[symbols.status]
+    if (status !== 'loaded') {
+      throw new Error(`Invalid status. Holder can only be closed at 'loaded' status, but current status is '${status}'`)
+    }
+    this[symbols.status] = 'closing'
+
     const logger = this[symbols.logger]
     // stop all request listeners
     for (let item of this[symbols.stops].reverse()) {
@@ -95,9 +111,16 @@ class Holder {
       logger.info('item destroyed', {name: item.name})
     }
     logger.info('all items destroyed')
+
+    this[symbols.status] = 'closed'
   }
 
   getItem (name) {
+    const status = this[symbols.status]
+    if (status !== 'loaded') {
+      throw new Error(`Invalid status. Item can only be retrieved at 'loaded' status, but current status is '${status}'`)
+    }
+
     return this[symbols.items][name]
   }
 }

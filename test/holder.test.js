@@ -150,4 +150,35 @@ describe('Holder', () => {
       expect(err.message).toMatch(/definition name '.*' is duplicated/)
     }
   })
+
+  test('holder cannot be loaded after loaded', async () => {
+    expect.assertions(1)
+    const holder = new Holder()
+    await holder.load()
+    try {
+      await holder.load()
+    } catch (err) {
+      expect(err.message).toMatch(/^Invalid status. Holder can only be loaded at 'init' status, but current status is .*$/)
+    }
+  })
+
+  test('holder cannot be closed before loaded', async () => {
+    expect.assertions(1)
+    const holder = new Holder()
+    try {
+      await holder.close()
+    } catch (err) {
+      expect(err.message).toMatch(/^Invalid status. Holder can only be closed at 'loaded' status, but current status is .*$/)
+    }
+  })
+
+  test('item cannot be retrieved before loaded', async () => {
+    expect.assertions(1)
+    const holder = new Holder()
+    try {
+      holder.getItem('hi')
+    } catch (err) {
+      expect(err.message).toMatch(/^Invalid status. Item can only be retrieved at 'loaded' status, but current status is .*$/)
+    }
+  })
 })
