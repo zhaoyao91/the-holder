@@ -2,7 +2,7 @@ const Holder = require('../index')
 
 describe('Holder', () => {
   it('should load a item', async () => {
-    expect.assertions(1)
+    expect.assertions(2)
     const def1 = {
       name: 'item1',
       build: async () => {
@@ -22,6 +22,7 @@ describe('Holder', () => {
 
     const holder = new Holder()
     await holder.load([def1, def2])
+    expect(holder.getItem('item1')).toBe('Hello')
   })
 
   it('should load items by dependant relations', async () => {

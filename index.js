@@ -31,21 +31,28 @@ const clean = require('clean-options')
 const toposort = require('toposort')
 const flatten = require('lodash.flatten')
 
+const symbols = {
+  logger: Symbol('logger'),
+  items: Symbol('items'),
+  destroys: Symbol('destroys'),
+  stops: Symbol('stops')
+}
+
 class Holder {
   constructor (options) {
     const {
       logger = console,
     } = clean(options)
 
-    this._logger = logger
+    this[symbols.logger] = logger
   }
 
   async load (definitions) {
-    const logger = this._logger
-    const items = {}
+    const logger = this[symbols.logger]
+    const items = this[symbols.items] = {}
     const perItemDefs = []
-    const destroys = this._destroys = []
-    const stops = this._stops = []
+    const destroys = this[symbols.destroys] = []
+    const stops = this[symbols.stops] = []
     definitions = sortDefinitions(definitions)
     for (let definition of definitions) {
       const {perItem} = definition
@@ -73,21 +80,25 @@ class Holder {
   }
 
   async close () {
-    const logger = this._logger
+    const logger = this[symbols.logger]
     // stop all request listeners
-    for (let item of this._stops.reverse()) {
+    for (let item of this[symbols.stops].reverse()) {
       logger.info('stopping item...', {name: item.name})
       await item.stop()
       logger.info('item stopped', {name: item.name})
     }
     logger.info('all items stopped')
     // destroy all items and release all resources
-    for (let item of this._destroys.reverse()) {
+    for (let item of this[symbols.destroys].reverse()) {
       logger.info('destroying item...', {name: item.name})
       await item.destroy()
       logger.info('item destroyed', {name: item.name})
     }
     logger.info('all items destroyed')
+  }
+
+  getItem (name) {
+    return this[symbols.items][name]
   }
 }
 

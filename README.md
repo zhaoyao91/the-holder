@@ -138,6 +138,14 @@ Items are to be destroyed after all items are closed.
 () => Promise => Void
 ```
 
+#### $.getItem
+
+Get loaded item by name.
+
+```
+(String) => Any
+```
+
 ## License
 
 MIT
