@@ -3,10 +3,11 @@ const sleep = require('sleep-promise')
 
 describe('Holder', () => {
   it('should load a item', async () => {
-    expect.assertions(2)
+    expect.assertions(3)
     const def1 = {
       name: 'item1',
-      build: async () => {
+      build: async (_, def) => {
+        expect(def.name).toBe('item1')
         return {
           item: 'Hello'
         }

@@ -9,6 +9,7 @@
  * @typedef {function} Holder~ItemBuilder
  * @async
  * @param {object} items - items already built
+ * @param {object} definition - the definition of current item
  * @return {Promise.<Holder~ItemPack>}
  */
 
@@ -71,7 +72,7 @@ class Holder {
     for (let definition of definitions) {
       const {name, build} = definition
       logger.info('loading item...', {name})
-      const item = await build(items)
+      const item = await build(items, definition)
       logger.info('item loaded', {name})
       if (item) {
         if (item.stop) stops.push({name, stop: item.stop})
