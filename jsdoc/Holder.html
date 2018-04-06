@@ -89,7 +89,7 @@
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">object</span>
 
 
             
@@ -143,7 +143,7 @@
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">object</span>
 
 
             
@@ -164,6 +164,39 @@
             
 
             <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>adapters</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">key is type, value is a function which maps <a href="Holder.html#~CustomItemDefinition">Holder~CustomItemDefinition</a> to <a href="Holder.html#~StandardItemDefinition">Holder~StandardItemDefinition</a></td>
         </tr>
 
     
@@ -211,7 +244,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line42">line 42</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line57">line 57</a>
     </li></ul></dd>
     
 
@@ -317,7 +350,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line94">line 94</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line111">line 111</a>
     </li></ul></dd>
     
 
@@ -470,7 +503,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line128">line 128</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line145">line 145</a>
     </li></ul></dd>
     
 
@@ -623,7 +656,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line58">line 58</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line75">line 75</a>
     </li></ul></dd>
     
 
@@ -677,156 +710,7 @@
 
         
                 
-
-    
-
-    
-    <h4 class="name" id="~ItemBuilder"><span class="type-signature">(async) </span>ItemBuilder<span class="signature">(items)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="Holder.html#~ItemPack">Holder~ItemPack</a>>}</span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>items</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">items already built</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line8">line 8</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise.&lt;<a href="Holder.html#~ItemPack">Holder~ItemPack</a>></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-            
-                
-<h4 class="name" id="~ItemDefinition">ItemDefinition</h4>
+<h4 class="name" id="~CustomItemDefinition">CustomItemDefinition</h4>
 
 
 
@@ -871,6 +755,35 @@
     </thead>
 
     <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">denote the type of this item</td>
+        </tr>
+
     
 
         <tr>
@@ -938,20 +851,17 @@
 
         <tr>
             
-                <td class="name"><code>build</code></td>
+                <td class="name"><code>...options</code></td>
             
 
             <td class="type">
-            
-                
-<span class="param-type"><a href="Holder.html#~ItemBuilder">Holder~ItemBuilder</a></span>
-
-
             
             </td>
 
             
                 <td class="attributes">
+                
+                    &lt;optional><br>
                 
 
                 
@@ -960,7 +870,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">any other custom options</td>
         </tr>
 
     
@@ -999,7 +909,250 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1">line 1</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line8">line 8</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+
+    
+
+    
+    <h4 class="name" id="~ItemBuilder"><span class="type-signature">(async) </span>ItemBuilder<span class="signature">(items, definition)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="Holder.html#~ItemPack">Holder~ItemPack</a>>}</span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>items</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">items already built</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>definition</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the definition of current item</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line20">line 20</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;<a href="Holder.html#~ItemPack">Holder~ItemPack</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+            
+                
+<h4 class="name" id="~ItemDefinition">ItemDefinition</h4>
+
+
+
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="Holder.html#~StandardItemDefinition">Holder~StandardItemDefinition</a></span>
+|
+
+<span class="param-type"><a href="Holder.html#~CustomItemDefinition">Holder~CustomItemDefinition</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line16">line 16</a>
     </li></ul></dd>
     
 
@@ -1191,7 +1344,198 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line15">line 15</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line28">line 28</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="~StandardItemDefinition">StandardItemDefinition</h4>
+
+
+
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>need</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">Array.&lt;string></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the items this item requires</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>build</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Holder.html#~ItemBuilder">Holder~ItemBuilder</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -1227,7 +1571,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Apr 06 2018 22:37:31 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Apr 06 2018 23:05:08 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

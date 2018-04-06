@@ -167,4 +167,25 @@ describe('Holder', () => {
     expect(loaded).toEqual([true, true, false])
     expect(closed).toEqual([true, true, false])
   })
+
+  it('should adapt custom type', async () => {
+    const customDef = {
+      type: 'add',
+      name: 'testItem',
+      a: 1,
+      b: 2
+    }
+    const addAdapter = (def) => {
+      return {
+        ...def,
+        build () {
+          return {item: def.a + def.b}
+        }
+      }
+    }
+    const holder = new Holder({adapters: {add: addAdapter}})
+    await holder.load([customDef])
+    const item = holder.getItem('testItem')
+    expect(item).toBe(3)
+  })
 })

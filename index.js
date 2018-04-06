@@ -1,8 +1,20 @@
 /**
- * @typedef {object} Holder~ItemDefinition
+ * @typedef {object} Holder~StandardItemDefinition
  * @property {string} name
  * @property {string | string[]} [need] - the items this item requires
  * @property {Holder~ItemBuilder} build
+ */
+
+/**
+ * @typedef {object} Holder~CustomItemDefinition
+ * @property {string} type - denote the type of this item
+ * @property {string} name
+ * @property {string | string[]} [need] - the items this item requires
+ * @property [...options] - any other custom options
+ */
+
+/**
+ * @typedef {Holder~StandardItemDefinition | Holder~CustomItemDefinition} Holder~ItemDefinition
  */
 
 /**
@@ -32,22 +44,26 @@ const symbols = {
   stops: Symbol('stops'),
   loadSignal: Symbol('loadSignal'), // init, loading, loaded
   closeSignal: Symbol('closeSignal'), // init, closing, closed
-  sigtermListener: Symbol('sigtermListener')
+  sigtermListener: Symbol('sigtermListener'),
+  adapters: Symbol('adapters')
 }
 
 class Holder {
   /**
-   * @param {Object} [options]
-   * @param {Object} [options.logger]
+   * @param {object} [options]
+   * @param {object} [options.logger]
+   * @param {object} [options.adapters] - key is a type, value is a function which maps {@link Holder~CustomItemDefinition} to {@link Holder~StandardItemDefinition}
    */
   constructor (options) {
     const {
       logger = console,
+      adapters = {}
     } = clean(options)
 
     this[symbols.logger] = logger
     this[symbols.loadSignal] = new Signal('init')
     this[symbols.closeSignal] = new Signal('init')
+    this[symbols.adapters] = adapters
   }
 
   /**
@@ -64,12 +80,14 @@ class Holder {
     }
     loadSignal.state = 'loading'
 
+    const adapters = this[symbols.adapters]
     const logger = this[symbols.logger]
     const items = this[symbols.items] = {}
     const destroys = this[symbols.destroys] = []
     const stops = this[symbols.stops] = []
     definitions = sortDefinitions(definitions)
     for (let definition of definitions) {
+      if (definition.type) definition = adapters[definition.type](definition) // adapt custom definition
       const {name, build} = definition
       logger.info('loading item...', {name})
       const item = await build(items, definition)
