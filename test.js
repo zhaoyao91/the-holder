@@ -1,4 +1,4 @@
-const Holder = require('../index')
+const Holder = require('./index')
 const sleep = require('sleep-promise')
 
 describe('Holder', () => {
@@ -90,34 +90,6 @@ describe('Holder', () => {
       'destroy d',
       'destroy a'
     ])
-  })
-
-  it('should load needed per-item item', async () => {
-    expect.assertions(3)
-    const defs = [
-      {name: 'base', build () {return {item: 'Base'}}},
-      {
-        perItem: true, name: 'name', need: 'base', build (context, def) {
-          expect(context.base).toBe('Base')
-          return def.name
-        }
-      },
-      {
-        name: 'item1', need: 'name', build (context) {
-          expect(context.name).toBe('item1')
-        }
-      },
-      {
-        name: 'item2', need: 'item1', build (context) {
-          // as item2 do not declare requirement on name
-          // it won't receive this per-item item
-          expect(context.name).toBeUndefined()
-        }
-      }
-    ]
-
-    const holder = new Holder()
-    await holder.load(defs)
   })
 
   it('should not load items with cycle dependencies', async () => {

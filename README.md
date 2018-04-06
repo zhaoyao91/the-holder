@@ -77,74 +77,7 @@ gracedown(async () => {
 
 ## API
 
-### Holder
-
-#### $.constructor
-
-```
-(options?: Options) => Holder
-
-Options ~ {
-  logger?
-}
-``` 
-
-#### $.load
-
-Load items by their definitions.
-
-Items will be loaded in an order computed by their dependant relations.
-
-```
-(ItemDefinition[]) => Promise => Void
-
-ItemDefinition: StandardItemDefinition | PerItemDefinition
-
-StandardItemDefinition: {
-  name: String,
-  need?: String | String[],
-  build: (items) => Promise => ItemPack,
-}
-
-// special item definition which will build a new specific item for every item depends on it 
-// this kind of item cannot be stopped or destroyed
-PerItemDefinition: {
-  perItem: true,
-  name: String,
-  need?: String | String[],
-  build: (items, definition) => Promise => Item
-}
-
-Item ~ Any
-
-ItemPack: {
-  item: Item,
-
-  // as server, stop request listener
-  stop?: () => Promise => void,
-
-  // destroy item and release its resources
-  destroy?: () => Promise => void,
-}
-```
-
-#### $.close
-
-Close the holder and stop/destroy all items in the reverse order they were loaded by.
-
-Items are to be destroyed after all items are closed.
-
-```
-() => Promise => Void
-```
-
-#### $.getItem
-
-Get loaded item by name.
-
-```
-(String) => Any
-```
+[Documentation](https://htmlpreview.github.io/?https://github.com/zhaoyao91/the-holder/blob/master/jsdoc/Holder.html)
 
 ## License
 

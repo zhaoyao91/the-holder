@@ -1,10 +1,11 @@
 {
   "name": "the-holder",
-  "version": "1.1.0",
+  "version": "1.1.0-dev",
   "description": "General app loader or item holder.",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "doc": "jsdoc -c jsdoc.config.json"
   },
   "keywords": [
     "holder"
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@types/jest": "^22.2.0",
     "jest": "^22.4.2",
+    "jsdoc": "^3.5.5",
     "sleep-promise": "^2.0.0"
   }
 }
