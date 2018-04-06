@@ -77,7 +77,7 @@ gracedown(async () => {
 
 ## API
 
-[Documentation](https://rawgit.com/zhaoyao91/the-holder/master/jsdoc/Holder.html)
+[Documentation](./api.md)
 
 ## License
 
