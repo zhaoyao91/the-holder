@@ -188,4 +188,31 @@ describe('Holder', () => {
     const item = holder.getItem('testItem')
     expect(item).toBe(3)
   })
+
+  it('should build item for following items', async () => {
+    const holder = new Holder()
+    await holder.load([
+      {
+        name: 'item1',
+        build () {
+          return {
+            buildItem (definition) {
+              return definition.name
+            }
+          }
+        }
+      },
+      {
+        name: 'item2',
+        need: 'item1',
+        build (items) {
+          return {
+            item: items['item1']
+          }
+        }
+      }
+    ])
+    const item2 = holder.getItem('item2')
+    expect(item2).toBe('item2')
+  })
 })

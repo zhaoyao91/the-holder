@@ -104,4 +104,5 @@ get the item by name
 | [item] | <code>any</code> |  |
 | [stop] | <code>function</code> | async () => void, stop listen to any requests |
 | [destroy] | <code>function</code> | async () => void, destroy this item and release resources |
+| [buildItem] | <code>function</code> | async (definition) => any, builder function which will be called for every following items to build dynamic item for them |
 

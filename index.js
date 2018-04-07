@@ -30,6 +30,7 @@
  * @property {any} [item]
  * @property {function} [stop] - async () => void, stop listen to any requests
  * @property {function} [destroy] - async () => void, destroy this item and release resources
+ * @property {function} [buildItem] - async (definition) => any, builder function which will be called for every following items to build dynamic item for them
  */
 
 const clean = require('clean-options')
@@ -45,7 +46,8 @@ const symbols = {
   loadSignal: Symbol('loadSignal'), // init, loading, loaded
   closeSignal: Symbol('closeSignal'), // init, closing, closed
   sigtermListener: Symbol('sigtermListener'),
-  adapters: Symbol('adapters')
+  adapters: Symbol('adapters'),
+  itemBuilders: Symbol('itemBuilders')
 }
 
 class Holder {
@@ -85,17 +87,20 @@ class Holder {
     const items = this[symbols.items] = {}
     const destroys = this[symbols.destroys] = []
     const stops = this[symbols.stops] = []
+    const itemBuilders = this[symbols.itemBuilders] = []
     definitions = sortDefinitions(definitions)
     for (let definition of definitions) {
       if (definition.type) definition = adapters[definition.type](definition) // adapt custom definition
       const {name, build} = definition
       logger.info('loading item...', {name})
-      const item = await build(items, definition)
+      const dynamicItems = await buildDynamicItems(itemBuilders, definition)
+      const pack = await build({...items, ...dynamicItems}, definition)
       logger.info('item loaded', {name})
-      if (item) {
-        if (item.stop) stops.push({name, stop: item.stop})
-        if (item.destroy) destroys.push({name, destroy: item.destroy})
-        items[name] = item.item
+      if (pack) {
+        if (pack.stop) stops.push({name, stop: pack.stop})
+        if (pack.destroy) destroys.push({name, destroy: pack.destroy})
+        if (pack.buildItem) itemBuilders.push({name, buildItem: pack.buildItem})
+        if (pack.item) items[name] = pack.item
       }
       // if user try to close holder while loading, stop loading more items
       if (closeSignal.state === 'closing') break
@@ -179,4 +184,11 @@ function getNeed (x) {
   if (!x.need) return []
   else if (!Array.isArray(x.need)) return [x.need]
   else return x.need
+}
+
+async function buildDynamicItems (builders, definition) {
+  const items = await Promise.all(builders.map(x => x.buildItem(definition)))
+  const itemMap = {}
+  builders.forEach((x, index) => itemMap[x.name] = items[index])
+  return itemMap
 }
